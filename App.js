@@ -1,11 +1,9 @@
 import React from "react";
-
 import { useFonts } from "expo-font";
 
-import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 
-import RegistrationScreen from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
+import useRout from "./router";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -18,17 +16,7 @@ export default function App() {
     return null;
   }
 
-  return (
-    <View style={styles.container}>
-      <RegistrationScreen />
-      {/* <LoginScreen /> */}
-    </View>
-  );
-}
+  const routing = useRout();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-});
+  return <NavigationContainer>{routing}</NavigationContainer>;
+}
