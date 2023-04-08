@@ -119,7 +119,7 @@ const RegistrationScreen = ({ navigation }) => {
 
                 <SafeAreaView style={{ ...styles.form, paddingTop: 92 }}>
                   <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  // behavior={Platform.OS === "ios" ? "padding" : "height"}
                   >
                     <TextInput
                       style={{
