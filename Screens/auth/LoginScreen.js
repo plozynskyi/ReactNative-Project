@@ -16,8 +16,8 @@ import {
 import { styles } from "./auth-styles";
 
 const initialState = {
-  email: "",
-  password: "",
+  email: "test",
+  password: "test@test.com",
 };
 
 const LoginScreen = ({ navigation }) => {
