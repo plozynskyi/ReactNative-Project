@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 import {
   KeyboardAvoidingView,
@@ -11,13 +11,16 @@ import {
   ImageBackground,
   Platform,
   SafeAreaView,
-} from "react-native";
+  Alert,
+} from 'react-native';
 
-import { styles } from "./auth-styles";
+import { styles } from './auth-styles';
 
 const initialState = {
-  email: "test",
-  password: "test@test.com",
+  image: null,
+  login: 'Pasha-Test',
+  email: 'pasha@gmail.com',
+  password: '123456',
 };
 
 const LoginScreen = ({ navigation }) => {
@@ -29,10 +32,9 @@ const LoginScreen = ({ navigation }) => {
     password: false,
   });
 
-  // console.log(navigation);
   console.log(Platform.OS);
 
-  Keyboard.addListener("keyboardDidHide", () => {
+  Keyboard.addListener('keyboardDidHide', () => {
     setIsKeyboardShown(false);
   });
 
@@ -42,30 +44,29 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const onSubmit = () => {
-    if (state.password === "" || state.email === "") {
-      return alert("Fill in all fields please!");
+    if (state.password === '' || state.email === '') {
+      return Alert.alert('Please fill in all fields!');
     }
-    console.log(state);
 
     keyboardHide();
     setState(initialState);
 
-    navigation.navigate("Home");
+    navigation.navigate('Home', state);
   };
 
-  const inputOnFocus = (value) => {
-    setIsInputFocus((prevState) => ({ ...prevState, [value]: true }));
+  const inputOnFocus = value => {
+    setIsInputFocus(prevState => ({ ...prevState, [value]: true }));
   };
 
-  const inputOnBlur = (value) => {
-    setIsInputFocus((prevState) => ({ ...prevState, [value]: false }));
+  const inputOnBlur = value => {
+    setIsInputFocus(prevState => ({ ...prevState, [value]: false }));
   };
 
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={keyboardHide}>
         <ImageBackground
-          source={require("../../assets/images/bg.jpg")}
+          source={require('../../assets/images/bg.jpg')}
           style={styles.imgBackground}
         >
           <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -84,29 +85,29 @@ const LoginScreen = ({ navigation }) => {
 
               <SafeAreaView style={styles.form}>
                 <KeyboardAvoidingView
-                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 >
                   <TextInput
                     style={{
                       ...styles.input,
 
                       backgroundColor: isInputFocus.email
-                        ? "#ffffff"
-                        : "#F6F6F6",
-                      borderColor: isInputFocus.email ? "#FF6C00" : "#E8E8E8",
+                        ? '#ffffff'
+                        : '#F6F6F6',
+                      borderColor: isInputFocus.email ? '#FF6C00' : '#E8E8E8',
                     }}
                     value={state.email}
                     placeholder="Адреса електронної пошти"
-                    placeholderTextColor={"#BDBDBD"}
+                    placeholderTextColor={'#BDBDBD'}
                     onChange={({ nativeEvent: { text } }) =>
-                      setState((prevState) => ({ ...prevState, email: text }))
+                      setState(prevState => ({ ...prevState, email: text }))
                     }
                     onFocus={() => {
                       setIsKeyboardShown(true);
-                      inputOnFocus("email");
+                      inputOnFocus('email');
                     }}
                     onBlur={() => {
-                      inputOnBlur("email");
+                      inputOnBlur('email');
                     }}
                   />
 
@@ -117,39 +118,39 @@ const LoginScreen = ({ navigation }) => {
                         paddingRight: 90,
                         marginTop: 16,
                         backgroundColor: isInputFocus.password
-                          ? "#ffffff"
-                          : "#F6F6F6",
+                          ? '#ffffff'
+                          : '#F6F6F6',
                         borderColor: isInputFocus.password
-                          ? "#FF6C00"
-                          : "#E8E8E8",
+                          ? '#FF6C00'
+                          : '#E8E8E8',
                       }}
-                      placeholder={"Введіть пароль"}
-                      placeholderTextColor={"#BDBDBD"}
+                      placeholder={'Введіть пароль'}
+                      placeholderTextColor={'#BDBDBD'}
                       secureTextEntry={isPasswordShown ? false : true}
                       value={state.password}
                       onChange={({ nativeEvent: { text } }) =>
-                        setState((prevState) => ({
+                        setState(prevState => ({
                           ...prevState,
                           password: text,
                         }))
                       }
                       onFocus={() => {
                         setIsKeyboardShown(true);
-                        inputOnFocus("password");
+                        inputOnFocus('password');
                       }}
                       onBlur={() => {
-                        inputOnBlur("password");
+                        inputOnBlur('password');
                       }}
                     />
 
                     <TouchableOpacity
                       style={styles.showPasswordBtn}
                       onPress={() =>
-                        setIsPasswordShown((prevState) => !prevState)
+                        setIsPasswordShown(prevState => !prevState)
                       }
                     >
                       <Text style={styles.showPasswordBtnText}>
-                        {isPasswordShown ? "Приховати" : "Показати"}
+                        {isPasswordShown ? 'Приховати' : 'Показати'}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -168,7 +169,7 @@ const LoginScreen = ({ navigation }) => {
                   style={styles.singInLink}
                   activeOpacity={0.7}
                   onPress={() => {
-                    navigation.navigate("Registration");
+                    navigation.navigate('Registration');
                   }}
                 >
                   <Text style={styles.singInText}>

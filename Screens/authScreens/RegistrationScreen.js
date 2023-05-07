@@ -1,5 +1,7 @@
-import React from "react";
-import { useState } from "react";
+import React from 'react';
+import { useState } from 'react';
+import * as ImagePicker from 'expo-image-picker';
+
 import {
   Alert,
   View,
@@ -14,16 +16,16 @@ import {
   TouchableOpacity,
   Platform,
   ScrollView,
-} from "react-native";
+} from 'react-native';
 
 const initialState = {
   image: null,
-  login: "",
-  email: "",
-  password: "",
+  login: 'Pasha-Test',
+  email: 'pasha@gmail.com',
+  password: '123456',
 };
 
-import { styles } from "./auth-styles";
+import { styles } from './auth-styles';
 
 const RegistrationScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
@@ -35,20 +37,41 @@ const RegistrationScreen = ({ navigation }) => {
     password: false,
   });
 
-  // console.log(navigation);
   console.log(Platform.OS);
 
-  Keyboard.addListener("keyboardDidHide", () => {
+  Keyboard.addListener('keyboardDidHide', () => {
     setIsKeyboardShown(false);
   });
 
-  const onSubmit = () => {
-    if (state.login === "" || state.password === "" || state.email === "") {
-      return Alert.alert("Fill in all fields please!");
+  const addUserImage = async () => {
+    const userImage = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+    if (!userImage.canceled) {
+      setState(prevState => {
+        return {
+          ...prevState,
+          image: userImage.assets[0].uri,
+        };
+      });
     }
-    console.log(state);
+  };
+
+  const removeUserImage = () => {
+    setState(prevState => ({ ...prevState, image: null }));
+  };
+
+  const onSubmit = () => {
+    if (state.login === '' || state.password === '' || state.email === '') {
+      return Alert.alert('Please fill in all fields!');
+    }
+
     keyboardHide();
-    setState(initialState);
+    const { image, login, email } = state;
+    navigation.navigate('Home', { image, login, email });
   };
 
   const keyboardHide = () => {
@@ -56,12 +79,12 @@ const RegistrationScreen = ({ navigation }) => {
     Keyboard.dismiss();
   };
 
-  const inputOnFocus = (value) => {
-    setIsInputFocus((prevState) => ({ ...prevState, [value]: true }));
+  const inputOnFocus = value => {
+    setIsInputFocus(prevState => ({ ...prevState, [value]: true }));
   };
 
-  const inputOnBlur = (value) => {
-    setIsInputFocus((prevState) => ({ ...prevState, [value]: false }));
+  const inputOnBlur = value => {
+    setIsInputFocus(prevState => ({ ...prevState, [value]: false }));
   };
 
   return (
@@ -69,7 +92,7 @@ const RegistrationScreen = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={keyboardHide}>
         <ScrollView>
           <ImageBackground
-            source={require("../../assets/images/bg.jpg")}
+            source={require('../../assets/images/bg.jpg')}
             style={styles.imgBackground}
           >
             <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -81,20 +104,28 @@ const RegistrationScreen = ({ navigation }) => {
                 }}
               >
                 <View style={styles.usePhotoContainer}>
-                  <Image
-                    source={{ uri: state.image }}
-                    style={styles.userPhoto}
-                  />
+                  {state.image ? (
+                    <Image
+                      source={{ uri: state.image }}
+                      style={styles.userPhoto}
+                    />
+                  ) : (
+                    <Image
+                      source={require('../../assets/images/user_photo_default.jpg')}
+                      style={styles.userPhoto}
+                    />
+                  )}
                   {state.image ? (
                     <TouchableOpacity
                       style={{
                         ...styles.addUserPhotoBtn,
-                        borderColor: "#E8E8E8",
+                        borderColor: '#E8E8E8',
                       }}
                       activeOpacity={0.7}
+                      onPress={removeUserImage}
                     >
                       <Image
-                        source={require("../../assets/images/removeUserPhoto.png")}
+                        source={require('../../assets/images/removeUserPhoto.png')}
                         style={styles.addUserPhotoBtnImg}
                       />
                     </TouchableOpacity>
@@ -102,9 +133,10 @@ const RegistrationScreen = ({ navigation }) => {
                     <TouchableOpacity
                       style={styles.addUserPhotoBtn}
                       activeOpacity={0.7}
+                      onPress={addUserImage}
                     >
                       <Image
-                        source={require("../../assets/images/addUserPhoto.png")}
+                        source={require('../../assets/images/addUserPhoto.png')}
                         style={styles.addUserPhotoBtnImg}
                       />
                     </TouchableOpacity>
@@ -125,21 +157,21 @@ const RegistrationScreen = ({ navigation }) => {
                       style={{
                         ...styles.input,
                         backgroundColor: isInputFocus.login
-                          ? "#ffffff"
-                          : "#F6F6F6",
-                        borderColor: isInputFocus.login ? "#FF6C00" : "#E8E8E8",
+                          ? '#ffffff'
+                          : '#F6F6F6',
+                        borderColor: isInputFocus.login ? '#FF6C00' : '#E8E8E8',
                       }}
                       value={state.login}
                       placeholder="Логін"
                       onFocus={() => {
                         setIsKeyboardShown(true);
-                        inputOnFocus("login");
+                        inputOnFocus('login');
                       }}
                       onBlur={() => {
-                        inputOnBlur("login");
+                        inputOnBlur('login');
                       }}
                       onChange={({ nativeEvent: { text } }) =>
-                        setState((prevState) => ({ ...prevState, login: text }))
+                        setState(prevState => ({ ...prevState, login: text }))
                       }
                     />
 
@@ -148,22 +180,22 @@ const RegistrationScreen = ({ navigation }) => {
                         ...styles.input,
                         marginTop: 16,
                         backgroundColor: isInputFocus.email
-                          ? "#ffffff"
-                          : "#F6F6F6",
-                        borderColor: isInputFocus.email ? "#FF6C00" : "#E8E8E8",
+                          ? '#ffffff'
+                          : '#F6F6F6',
+                        borderColor: isInputFocus.email ? '#FF6C00' : '#E8E8E8',
                       }}
                       value={state.email}
                       placeholder="Адреса електронної пошти"
-                      placeholderTextColor={"#BDBDBD"}
+                      placeholderTextColor={'#BDBDBD'}
                       onChange={({ nativeEvent: { text } }) =>
-                        setState((prevState) => ({ ...prevState, email: text }))
+                        setState(prevState => ({ ...prevState, email: text }))
                       }
                       onFocus={() => {
                         setIsKeyboardShown(true);
-                        inputOnFocus("email");
+                        inputOnFocus('email');
                       }}
                       onBlur={() => {
-                        inputOnBlur("email");
+                        inputOnBlur('email');
                       }}
                     />
 
@@ -174,39 +206,39 @@ const RegistrationScreen = ({ navigation }) => {
                           marginTop: 16,
                           paddingRight: 90,
                           backgroundColor: isInputFocus.password
-                            ? "#ffffff"
-                            : "#F6F6F6",
+                            ? '#ffffff'
+                            : '#F6F6F6',
                           borderColor: isInputFocus.password
-                            ? "#FF6C00"
-                            : "#E8E8E8",
+                            ? '#FF6C00'
+                            : '#E8E8E8',
                         }}
-                        placeholder={"Введіть пароль"}
-                        placeholderTextColor={"#BDBDBD"}
+                        placeholder={'Введіть пароль'}
+                        placeholderTextColor={'#BDBDBD'}
                         secureTextEntry={isPasswordShown ? false : true}
                         value={state.password}
                         onChange={({ nativeEvent: { text } }) =>
-                          setState((prevState) => ({
+                          setState(prevState => ({
                             ...prevState,
                             password: text,
                           }))
                         }
                         onFocus={() => {
                           setIsKeyboardShown(true);
-                          inputOnFocus("password");
+                          inputOnFocus('password');
                         }}
                         onBlur={() => {
-                          inputOnBlur("password");
+                          inputOnBlur('password');
                         }}
                       />
 
                       <TouchableOpacity
                         style={styles.showPasswordBtn}
                         onPress={() =>
-                          setIsPasswordShown((prevState) => !prevState)
+                          setIsPasswordShown(prevState => !prevState)
                         }
                       >
                         <Text style={styles.showPasswordBtnText}>
-                          {isPasswordShown ? "Приховати" : "Показати"}
+                          {isPasswordShown ? 'Приховати' : 'Показати'}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -224,7 +256,7 @@ const RegistrationScreen = ({ navigation }) => {
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => {
-                      navigation.navigate("Login");
+                      navigation.navigate('Login');
                     }}
                   >
                     <Text style={styles.singInText}>
